@@ -1,0 +1,192 @@
+﻿<Window x:Class="FKGDataEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:FKGDataEditor"
+        Title="FKGDataEditor" Height="400" Width="525">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Margin="10,0,0,0" DataContext="{Binding SelectedItem, ElementName=CMB_Girls}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Button x:Name="BTN_CreateNew"
+                    HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Width="60" Height="22"
+                    Content="新增空白"
+                    Click="On_BTN_CreateNew_Click"></Button>
+            <ComboBox x:Name="CMB_Girls"
+                      MaxWidth="120" Height="40"
+                      HorizontalAlignment="Left" VerticalAlignment="Center"
+                      Margin="0,4">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock >
+                                <Run Text="{Binding ID}"></Run>
+                                <Run Text="."></Run>
+                            </TextBlock>
+                            <Image Source="{Binding ImageSrc}" Width="30" Height="30" Stretch="Uniform"></Image>
+                            <TextBlock Text="{Binding NamesJPN}" Margin="5,0"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Vertical">
+                    <Image x:Name="IMG_Icon" Source="{Binding ImageSrc}"
+                       Width="70" Height="70"
+                       HorizontalAlignment="Left" VerticalAlignment="Top"
+                       Stretch="Uniform"></Image>
+                    <Button x:Name="BTN_ChangeIcon"
+                        HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                        Width="70" Height="20"
+                        Content="更換圖示"
+                            Click="On_BTN_ChangeIcon_Click"></Button>
+                </StackPanel>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="ID:"></TextBlock>
+                    <TextBox x:Name="TXTBOX_ID" Text="{Binding ID}"
+                             Margin="25,0,0,0"
+                             VerticalAlignment="Top"></TextBox>
+
+                    <ComboBox x:Name="CMB_Rare" Grid.Row="1" Width="72"
+                              HorizontalAlignment="Right" VerticalAlignment="Top"
+                              SelectedIndex="{Binding Rare}">
+                        <!--星數最小為1，但ComboBox SelectedIndex為0，因此增加無效item補位-->
+                        <ComboBoxItem IsEnabled="False">---星數---</ComboBoxItem>
+                        <ComboBoxItem>1★</ComboBoxItem>
+                        <ComboBoxItem>2★</ComboBoxItem>
+                        <ComboBoxItem>3★</ComboBoxItem>
+                        <ComboBoxItem>4★</ComboBoxItem>
+                        <ComboBoxItem>5★</ComboBoxItem>
+                        <ComboBoxItem>6★</ComboBoxItem>
+                    </ComboBox>
+
+
+                    <ComboBox x:Name="CMB_Type" Grid.Row="2" Width="72"
+                              HorizontalAlignment="Right" VerticalAlignment="Top"
+                              SelectedIndex="0"
+                              SelectedItem="{Binding Type}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock x:Name="TXT_Type"></TextBlock>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Static local:GirlInfoEnum+Types.Slash}">
+                                        <Setter TargetName="TXT_Type" Property="Text" Value="斬"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Static local:GirlInfoEnum+Types.Blunt}">
+                                        <Setter TargetName="TXT_Type" Property="Text" Value="打"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Static local:GirlInfoEnum+Types.Pierce}">
+                                        <Setter TargetName="TXT_Type" Property="Text" Value="突"></Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding}" Value="{x:Static local:GirlInfoEnum+Types.Magic}">
+                                        <Setter TargetName="TXT_Type" Property="Text" Value="魔"></Setter>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+            </Grid>
+
+            <TextBlock Grid.Row="2" Text="國家:"></TextBlock>
+            <TextBlock Grid.Row="3" Text="日文名:"></TextBlock>
+            <TextBlock Grid.Row="4" Text="中文(繁):"></TextBlock>
+            <TextBlock Grid.Row="5" Text="中文(簡):"></TextBlock>
+            <TextBlock Grid.Row="6" Text="English:"></TextBlock>
+
+            <TextBox x:Name="TXTBOX_NamesJPN" Text="{Binding NamesJPN}"
+                     Grid.Row="3" Margin="60,0,0,0"
+                     VerticalAlignment="Top"></TextBox>
+            <TextBox x:Name="TXTBOX_NamesCHT" Text="{Binding NamesCHT}"
+                     Grid.Row="4" Margin="60,0,0,0"
+                     VerticalAlignment="Top"></TextBox>
+            <TextBox x:Name="TXTBOX_NamesCHS" Text="{Binding NamesCHS}"
+                     Grid.Row="5" Margin="60,0,0,0"
+                     VerticalAlignment="Top"></TextBox>
+            <TextBox x:Name="TXTBOX_NamesENU" Text="{Binding NamesENU}"
+                     Grid.Row="6" Margin="60,0,0,0"
+                     VerticalAlignment="Top"></TextBox>
+
+            <ComboBox x:Name="CMB_Nationality" SelectedItem="{Binding Nationality}"
+                      Grid.Row="2" Margin="60,0,0,0"
+                      VerticalAlignment="Top">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock x:Name="TXT_Nationality"></TextBlock>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding}" Value="{x:Static local:GirlInfoEnum+Nationalities.BlossomHill}">
+                                <Setter TargetName="TXT_Nationality" Property="Text" Value="ブロッサムヒル"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="{x:Static local:GirlInfoEnum+Nationalities.LilyWood}">
+                                <Setter TargetName="TXT_Nationality" Property="Text" Value="リリーウッド"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="{x:Static local:GirlInfoEnum+Nationalities.BananaOcean}">
+                                <Setter TargetName="TXT_Nationality" Property="Text" Value="バナナオーシャン"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="{x:Static local:GirlInfoEnum+Nationalities.BergamotValley}">
+                                <Setter TargetName="TXT_Nationality" Property="Text" Value="ベルガモットバレー"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="{x:Static local:GirlInfoEnum+Nationalities.WinterRose}">
+                                <Setter TargetName="TXT_Nationality" Property="Text" Value="ウィンターローズ"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="{x:Static local:GirlInfoEnum+Nationalities.LotusLake}">
+                                <Setter TargetName="TXT_Nationality" Property="Text" Value="ロータスレイク"></Setter>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+
+            <StackPanel Grid.Row="9" HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button x:Name="BTN_Prev" Content="上一個" Width="50" Height="28" Click="On_BTN_Prev_Click"/>
+                <Button x:Name="BTN_Next" Content="下一個" Margin="10,0,0,0" Width="50" Height="28" Click="On_BTN_Next_Click"/>
+            </StackPanel>
+
+        </Grid>
+
+
+        <Grid Grid.Column="1" DataContext="{Binding SelectedItem, ElementName=CMB_Girls}">
+            <TextBlock x:Name="TXT_Note"
+                   Grid.Column="1"
+                   HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"
+                   TextWrapping="Wrap"
+                   Text="其他:"/>
+            
+            <TextBox x:Name="TXTBOX_Note"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 Margin="10,35,10,10"
+                 TextWrapping="Wrap"
+                 Text="{Binding Note}"/>
+        </Grid>
+        
+
+    </Grid>
+</Window>
