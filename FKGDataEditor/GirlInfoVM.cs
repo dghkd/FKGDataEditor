@@ -46,7 +46,12 @@ namespace FKGDataEditor
         public String ImgBase64
         {
             get { return _info.ImgBase64; }
-            set { _info.ImgBase64 = value; OnPropertyChanged("ImgBase64"); OnPropertyChanged("ImageSrc"); }
+            set
+            {
+                _info.ImgBase64 = value;
+                _info.ImageSrc = GirlInfo.Base642Image(this.ImgBase64);
+                OnPropertyChanged("ImgBase64"); OnPropertyChanged("ImageSrc");
+            }
         }
         public String Names
         {
