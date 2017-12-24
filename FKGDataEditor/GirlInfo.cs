@@ -26,10 +26,7 @@ namespace FKGDataEditor
         public GirlInfoEnum.Types Type { get; set; }
         public GirlInfoEnum.Nationalities Nationality { get; set; }
         public String Note { get; set; }
-
-
-
-
+        
         public static String ImgToBase64(BitmapImage bmp)
         {
             byte[] bytes = null;
@@ -101,17 +98,6 @@ namespace FKGDataEditor
                 return null;
             }
         }
-
-        //public BitmapSource Base64ToImageSource(String strBase64)
-        //{
-        //    var bytes = Convert.FromBase64String(strBase64);
-
-        //    using (var stream = new MemoryStream(bytes))
-        //    {
-        //        return BitmapFrame.Create(stream,
-        //            BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-        //    }
-        //}
-
+        
     }
 }
