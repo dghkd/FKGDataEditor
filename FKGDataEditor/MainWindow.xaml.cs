@@ -36,7 +36,7 @@ namespace FKGDataEditor
             Task.Factory.StartNew(() =>
             {
                 _girls = SQLiteCtrl.Data.LoadData();
-            
+
                 foreach (GirlInfo info in _girls)
                 {
                     GirlInfoVM vm = new GirlInfoVM(info);

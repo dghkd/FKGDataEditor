@@ -55,7 +55,15 @@ namespace FKGDataEditor
         }
         public String Names
         {
-            get { return _info.Names; }
+            get
+            {
+                if (_info.Names == ""
+                    || _info.Names == null)
+                {
+                    return _info.NamesJPN;
+                }
+                return _info.Names;
+            }
             set { _info.Names = value; OnPropertyChanged("Names"); }
         }
 
@@ -79,6 +87,11 @@ namespace FKGDataEditor
         {
             get { return _info.NamesENU; }
             set { _info.NamesENU = value; OnPropertyChanged("NamesENU"); }
+        }
+        public int FKGID
+        {
+            get { return _info.FKGID; }
+            set { _info.FKGID = value; OnPropertyChanged("FKGID"); }
         }
 
         public int Rare

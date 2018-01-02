@@ -21,6 +21,7 @@ namespace FKGDataEditor
         public String NamesCHT { get; set; }
         public String NamesCHS { get; set; }
         public String NamesENU { get; set; }
+        public int FKGID { get; set; }
 
         public int Rare { get; set; }
         public GirlInfoEnum.Types Type { get; set; }

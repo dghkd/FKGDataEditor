@@ -32,6 +32,7 @@ namespace FKGDataEditor
         private const String COLUMN_NAME_NAMES_CHT = "NamesCHT";
         private const String COLUMN_NAME_NAMES_CHS = "NamesCHS";
         private const String COLUMN_NAME_NAMES_ENU = "NamesENU";
+        private const String COLUMN_NAME_FKG_ID = "FKGID";
         private const String COLUMN_NAME_RARE = "Rare";
         private const String COLUMN_NAME_TYPE = "Type";
         private const String COLUMN_NAME_NATIONALITY = "Nationality";
@@ -125,7 +126,8 @@ namespace FKGDataEditor
              * enu names,
              * 2,
              * 1,
-             * 1
+             * 1,
+             * 123456
              * )
              */
 
@@ -141,7 +143,8 @@ namespace FKGDataEditor
             + COLUMN_NAME_RARE + ", "
             + COLUMN_NAME_TYPE + ", "
             + COLUMN_NAME_NATIONALITY + ", "
-            + COLUMN_NAME_NOTE
+            + COLUMN_NAME_NOTE + ", "
+            + COLUMN_NAME_FKG_ID
             + ") VALUES ("
             + data.ID + ", "
             + String.Format("\"{0}\", ", data.ImgBase64)
@@ -153,7 +156,8 @@ namespace FKGDataEditor
             + (int)data.Rare + ", "
             + (int)data.Type + ", "
             + (int)data.Nationality + ", "
-            + String.Format("\"{0}\"", data.Note)
+            + String.Format("\"{0}\"", data.Note) + ", "
+            + data.FKGID
             + ")";
 
             using (SQLiteCommand cmd = new SQLiteCommand(cmdText, _dbConnection))
@@ -186,6 +190,9 @@ namespace FKGDataEditor
                     info.Type = (GirlInfoEnum.Types)Convert.ToInt32(rdr[COLUMN_NAME_TYPE]);
                     info.Nationality = (GirlInfoEnum.Nationalities)Convert.ToInt32(rdr[COLUMN_NAME_NATIONALITY]);
                     info.Note = Convert.ToString(rdr[COLUMN_NAME_NOTE]);
+                    int variable = 0;
+                    int.TryParse(Convert.ToString(rdr[COLUMN_NAME_FKG_ID]), out variable);
+                    info.FKGID = variable;
 
                     ret.Add(info);
                 }
@@ -239,19 +246,28 @@ namespace FKGDataEditor
 
         private void AddBasicInfoColumn()
         {
-            String cmdText = String.Format("ALTER TABLE {0} ADD COLUMN {1} TEXT", TABLE_NAME_BASIC_INFO, COLUMN_NAME_NOTE);
+            String cmdHeader = "ALTER TABLE " + TABLE_NAME_BASIC_INFO + " ADD COLUMN ";
+            String[] addColumns = {
+                COLUMN_NAME_NOTE + " TEXT",
+                COLUMN_NAME_FKG_ID + " INTEGER"
+            };
 
-            using (SQLiteCommand cmd = new SQLiteCommand(cmdText, _dbConnection))
+            foreach (String cmdCol in addColumns)
             {
-                try
+                String cmdText = cmdHeader + cmdCol;
+                using (SQLiteCommand cmd = new SQLiteCommand(cmdText, _dbConnection))
                 {
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.Message);
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e.Message);
+                    }
                 }
             }
+
         }
         #endregion
     }
