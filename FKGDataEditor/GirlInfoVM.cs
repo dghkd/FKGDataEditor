@@ -70,7 +70,7 @@ namespace FKGDataEditor
         public String NamesJPN
         {
             get { return _info.NamesJPN; }
-            set { _info.NamesJPN = value; OnPropertyChanged("NamesJPN"); }
+            set { _info.NamesJPN = _info.Names = value; OnPropertyChanged("NamesJPN"); }
         }
 
         public String NamesCHT
