@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows.Media;
+using System.Diagnostics;
 
 namespace FKGDataEditor
 {
-    public class GirlInfoVM : INotifyPropertyChanged
+    public class GirlInfoVM : ViewModelBase
     {
         #region Private Member
         private GirlInfo _info;
@@ -53,6 +54,7 @@ namespace FKGDataEditor
                 OnPropertyChanged("ImgBase64"); OnPropertyChanged("ImageSrc");
             }
         }
+
         public String Names
         {
             get
@@ -109,13 +111,37 @@ namespace FKGDataEditor
             get { return _info.Nationality; }
             set { _info.Nationality = value; OnPropertyChanged("Nationality"); }
         }
-        
+
         public String Note
         {
             get { return _info.Note; }
             set { _info.Note = value; OnPropertyChanged("Note"); }
         }
 
+        public String WikiUrlJPN
+        {
+            get
+            {
+                String wikiUrl = @"http://フラワーナイトガール.攻略wiki.com/index.php?";
+                String name = this.NamesJPN;
+
+                wikiUrl += name;
+
+                return wikiUrl;
+            }
+        }
+
+        public String WikiUrlENU
+        {
+            get
+            {
+                String wikiUrl = @"http://flowerknight.wikia.com/wiki/";
+                String name = this.NamesENU.Replace(" ", "_");
+                wikiUrl += name;
+
+                return wikiUrl;
+            }
+        }
 
         public override string ToString()
         {
@@ -125,21 +151,61 @@ namespace FKGDataEditor
         #endregion
 
 
+        #region Command
+
+        public const string CmdKey_OpenWikiUrl_JPN = "CmdKey_OpenWikiUrl_JPN";
+        public const string CmdKey_OpenWikiUrl_ENU = "CmdKey_OpenWikiUrl_ENU";
+
+        private CommandBase _cmdOpenWikiUrl_JPN;
+        private CommandBase _cmdOpenWikiUrl_ENU;
+
+        public CommandBase CmdOpenWikiUrl_JPN
+        {
+            get
+            {
+                return _cmdOpenWikiUrl_JPN ?? (_cmdOpenWikiUrl_JPN = new CommandBase(x => ExecuteCommand(CmdKey_OpenWikiUrl_JPN)));
+            }
+        }
+        public CommandBase CmdOpenWikiUrl_ENU
+        {
+            get
+            {
+                return _cmdOpenWikiUrl_ENU ?? (_cmdOpenWikiUrl_ENU = new CommandBase(x => ExecuteCommand(CmdKey_OpenWikiUrl_ENU)));
+            }
+        }
+
+        public Func<String, GirlInfoVM, bool> CommandAction { get; set; }
+
+        private void ExecuteCommand(String cmdKey)
+        {
+            switch (cmdKey)
+            {
+                case CmdKey_OpenWikiUrl_JPN:
+                    Process.Start(this.WikiUrlJPN);
+                    break;
+
+                case CmdKey_OpenWikiUrl_ENU:
+                    Process.Start(this.WikiUrlENU);
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (null != this.CommandAction)
+            {
+                CommandAction(cmdKey, this);
+            }
+        }
+
+        #endregion
+
+
         #region Public Method
         public GirlInfo GetDataInfo()
         {
             return _info;
         }
         #endregion
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(String propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
     }
 }
