@@ -42,7 +42,7 @@ namespace FKGDataEditor
         #endregion
 
         private static readonly Lazy<SQLiteCtrl> _lazyInstance = new Lazy<SQLiteCtrl>(() => new SQLiteCtrl(), true);
-        
+
 
         public static SQLiteCtrl Data
         {
@@ -176,24 +176,66 @@ namespace FKGDataEditor
                 SQLiteDataReader rdr = cmd.ExecuteReader();
                 while (rdr.Read())
                 {
-                    GirlInfo info = new GirlInfo();
+                    GirlInfo info = ParseData(rdr);
 
-                    info.ID = Convert.ToInt32(rdr[COLUMN_NAME_ID]);
-                    info.ImgBase64 = Convert.ToString(rdr[COLUMN_NAME_IMG_BASE64]);
-                    //info.ImageSrc = GirlInfo.Base642Image(info.ImgBase64);
-                    info.Names = Convert.ToString(rdr[COLUMN_NAME_NAMES]);
-                    info.NamesJPN = Convert.ToString(rdr[COLUMN_NAME_NAMES_JPN]);
-                    info.NamesCHT = Convert.ToString(rdr[COLUMN_NAME_NAMES_CHT]);
-                    info.NamesCHS = Convert.ToString(rdr[COLUMN_NAME_NAMES_CHS]);
-                    info.NamesENU = Convert.ToString(rdr[COLUMN_NAME_NAMES_ENU]);
-                    info.Rare = Convert.ToInt32(rdr[COLUMN_NAME_RARE]);
-                    info.Type = (GirlInfoEnum.Types)Convert.ToInt32(rdr[COLUMN_NAME_TYPE]);
-                    info.Nationality = (GirlInfoEnum.Nationalities)Convert.ToInt32(rdr[COLUMN_NAME_NATIONALITY]);
-                    info.Note = Convert.ToString(rdr[COLUMN_NAME_NOTE]);
-                    int variable = 0;
-                    int.TryParse(Convert.ToString(rdr[COLUMN_NAME_FKG_ID]), out variable);
-                    info.FKGID = variable;
+                    ret.Add(info);
+                }
+            }
+            return ret;
+        }
 
+        public List<GirlInfo> SearchData(String keyword, GirlInfoEnum.Types type, GirlInfoEnum.Nationalities nationality, int rare)
+        {
+            List<GirlInfo> ret = new List<GirlInfo>();
+            String condition = "";
+
+            if (keyword != "")
+            {
+                condition += "( ";
+                condition += COLUMN_NAME_NAMES_JPN + String.Format(" LIKE '%{0}%' OR ", keyword);
+                condition += COLUMN_NAME_NAMES_CHT + String.Format(" LIKE '%{0}%' OR ", keyword);
+                condition += COLUMN_NAME_NAMES_CHS + String.Format(" LIKE '%{0}%' OR ", keyword);
+                condition += COLUMN_NAME_NAMES_ENU + String.Format(" LIKE '%{0}%' OR ", keyword);
+                condition += COLUMN_NAME_NOTE + String.Format(" LIKE '%{0}%'", keyword);
+                condition += " )";
+            }
+
+            if (type != GirlInfoEnum.Types.NotCare)
+            {
+                int itype = (int)type;
+                if (condition != "")
+                {
+                    condition += " AND ";
+                }
+                condition += String.Format("{0} == {1}", COLUMN_NAME_TYPE, itype);
+            }
+
+            if (nationality != GirlInfoEnum.Nationalities.NotCare)
+            {
+                int inational = (int)nationality;
+                if (condition != "")
+                {
+                    condition += " AND ";
+                }
+                condition += String.Format("{0} == {1}", COLUMN_NAME_NATIONALITY, inational);
+            }
+
+            if (rare > 0)
+            {
+                if (condition != "")
+                {
+                    condition += " AND ";
+                }
+                condition += String.Format("{0} == {1}", COLUMN_NAME_RARE, rare);
+            }
+
+            String cmdText = "SELECT * FROM " + TABLE_NAME_BASIC_INFO + " WHERE " + condition;
+            using (SQLiteCommand cmd = new SQLiteCommand(cmdText, _dbConnection))
+            {
+                SQLiteDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    GirlInfo info = ParseData(rdr);
                     ret.Add(info);
                 }
             }
@@ -268,6 +310,28 @@ namespace FKGDataEditor
                 }
             }
 
+        }
+
+        private static GirlInfo ParseData(SQLiteDataReader rdr)
+        {
+            GirlInfo info = new GirlInfo();
+
+            info.ID = Convert.ToInt32(rdr[COLUMN_NAME_ID]);
+            info.ImgBase64 = Convert.ToString(rdr[COLUMN_NAME_IMG_BASE64]);
+            //info.ImageSrc = GirlInfo.Base642Image(info.ImgBase64);
+            info.Names = Convert.ToString(rdr[COLUMN_NAME_NAMES]);
+            info.NamesJPN = Convert.ToString(rdr[COLUMN_NAME_NAMES_JPN]);
+            info.NamesCHT = Convert.ToString(rdr[COLUMN_NAME_NAMES_CHT]);
+            info.NamesCHS = Convert.ToString(rdr[COLUMN_NAME_NAMES_CHS]);
+            info.NamesENU = Convert.ToString(rdr[COLUMN_NAME_NAMES_ENU]);
+            info.Rare = Convert.ToInt32(rdr[COLUMN_NAME_RARE]);
+            info.Type = (GirlInfoEnum.Types)Convert.ToInt32(rdr[COLUMN_NAME_TYPE]);
+            info.Nationality = (GirlInfoEnum.Nationalities)Convert.ToInt32(rdr[COLUMN_NAME_NATIONALITY]);
+            info.Note = Convert.ToString(rdr[COLUMN_NAME_NOTE]);
+            int variable = 0;
+            int.TryParse(Convert.ToString(rdr[COLUMN_NAME_FKG_ID]), out variable);
+            info.FKGID = variable;
+            return info;
         }
         #endregion
     }

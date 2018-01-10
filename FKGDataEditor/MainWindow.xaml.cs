@@ -27,11 +27,11 @@ namespace FKGDataEditor
     {
         private List<GirlInfo> _girls = new List<GirlInfo>();
         private ObservableCollection<GirlInfoVM> _girlColle = new ObservableCollection<GirlInfoVM>();
-        
+
         public MainWindow()
         {
             InitializeComponent();
-            
+
             SQLiteCtrl.Data.Init();
             Task.Factory.StartNew(() =>
             {
@@ -43,15 +43,32 @@ namespace FKGDataEditor
                     _girlColle.Add(vm);
                 }
 
+                ObservableCollection<GirlInfoEnum.Types> typeColle = new ObservableCollection<GirlInfoEnum.Types>();
+                foreach (GirlInfoEnum.Types item in Enum.GetValues(typeof(GirlInfoEnum.Types)))
+                {
+                    if (item != GirlInfoEnum.Types.NotCare)
+                    {
+                        typeColle.Add(item);
+                    }
+                }
+                ObservableCollection<GirlInfoEnum.Nationalities> nationalColle = new ObservableCollection<GirlInfoEnum.Nationalities>();
+                foreach (GirlInfoEnum.Nationalities item in Enum.GetValues(typeof(GirlInfoEnum.Nationalities)))
+                {
+                    if (item != GirlInfoEnum.Nationalities.NotCare)
+                    {
+                        nationalColle.Add(item);
+                    }
+                }
+
                 App.Current.Dispatcher.Invoke(() =>
                 {
-                    CMB_Type.ItemsSource = Enum.GetValues(typeof(GirlInfoEnum.Types));
-                    CMB_Nationality.ItemsSource = Enum.GetValues(typeof(GirlInfoEnum.Nationalities));
+                    CMB_Type.ItemsSource = typeColle;
+                    CMB_Nationality.ItemsSource = nationalColle;
                     CMB_Girls.ItemsSource = _girlColle;
                     CMB_Girls.SelectedIndex = 0;
                 });
             });
-            
+
         }
         
         private void On_BTN_Prev_Click(object sender, RoutedEventArgs e)

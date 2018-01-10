@@ -27,6 +27,10 @@ namespace FKGDataEditor
             /// </summary>
             Magic,
 
+            /// <summary>
+            /// 不限
+            /// </summary>
+            NotCare,
         }
 
 
@@ -38,6 +42,11 @@ namespace FKGDataEditor
             BergamotValley,
             WinterRose,
             LotusLake,
+
+            /// <summary>
+            /// 不限
+            /// </summary>
+            NotCare,
         }
 
         public static Dictionary<String, Types> String2Types = new Dictionary<String, Types>()
