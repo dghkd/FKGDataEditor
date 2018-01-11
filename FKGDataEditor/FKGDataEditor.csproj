@@ -77,9 +77,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CommandBase.cs" />
+    <Compile Include="BaseClass\CommandBase.cs" />
+    <Compile Include="ViewModel\SearchParameterVM.cs" />
     <Compile Include="SQLiteCtrl.cs" />
-    <Compile Include="ViewModelBase.cs" />
+    <Compile Include="BaseClass\ViewModelBase.cs" />
     <Compile Include="WikiParser\EngWikiParser.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -89,9 +90,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GirlInfo.cs" />
-    <Compile Include="GirlInfoEnum.cs" />
-    <Compile Include="GirlInfoVM.cs" />
+    <Compile Include="Model\GirlInfo.cs" />
+    <Compile Include="Model\GirlInfoEnum.cs" />
+    <Compile Include="ViewModel\GirlInfoVM.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
