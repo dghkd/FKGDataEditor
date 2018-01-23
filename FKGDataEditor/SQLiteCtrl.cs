@@ -54,7 +54,7 @@ namespace FKGDataEditor
 
         #region Private Member
         private SQLiteConnection _dbConnection;
-
+        private bool _isConnected = false;
         #endregion
 
 
@@ -67,6 +67,11 @@ namespace FKGDataEditor
 
         public void Init()
         {
+            if (_isConnected)
+            {
+                return;
+            }
+
             //Create file
             if (!File.Exists(PATH_DB_FILE))
             {
@@ -98,6 +103,7 @@ namespace FKGDataEditor
             //Add other column into basic info table.
             AddBasicInfoColumn();
 
+            _isConnected = true;
         }
 
 
@@ -229,7 +235,12 @@ namespace FKGDataEditor
                 condition += String.Format("{0} == {1}", COLUMN_NAME_RARE, rare);
             }
 
-            String cmdText = "SELECT * FROM " + TABLE_NAME_BASIC_INFO + " WHERE " + condition;
+            if (condition != "")
+            {
+                condition = " WHERE " + condition;
+            }
+
+            String cmdText = "SELECT * FROM " + TABLE_NAME_BASIC_INFO + condition;
             using (SQLiteCommand cmd = new SQLiteCommand(cmdText, _dbConnection))
             {
                 SQLiteDataReader rdr = cmd.ExecuteReader();
