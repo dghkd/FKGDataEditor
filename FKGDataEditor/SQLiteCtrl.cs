@@ -243,11 +243,18 @@ namespace FKGDataEditor
             String cmdText = "SELECT * FROM " + TABLE_NAME_BASIC_INFO + condition;
             using (SQLiteCommand cmd = new SQLiteCommand(cmdText, _dbConnection))
             {
-                SQLiteDataReader rdr = cmd.ExecuteReader();
-                while (rdr.Read())
+                try
                 {
-                    GirlInfo info = ParseData(rdr);
-                    ret.Add(info);
+                    SQLiteDataReader rdr = cmd.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        GirlInfo info = ParseData(rdr);
+                        ret.Add(info);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"[SQLiteCtrl] SearchData error:{e.Message}");
                 }
             }
             return ret;
